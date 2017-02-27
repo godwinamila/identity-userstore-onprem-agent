@@ -20,16 +20,13 @@ package org.wso2.carbon.identity.user.store.ws.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
-import org.wso2.carbon.identity.user.store.ws.CleanupSchedulerTask;
-import org.wso2.carbon.identity.user.store.ws.WSUserStoreManager;
+import org.wso2.carbon.identity.user.store.ws.WSOutboundUserStoreManager;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.service.RealmService;
 
-import java.util.Timer;
-
 /**
- * @scr.component name="onprem.ws.user.store.component" immediate=true
+ * @scr.component name="onprem.outbound.ws.user.store.component" immediate=true
  * @scr.reference name="user.realmservice.default"
  * interface="org.wso2.carbon.user.core.service.RealmService"
  * cardinality="1..1" policy="dynamic" bind="setRealmService"
@@ -39,30 +36,29 @@ import java.util.Timer;
  * cardinality="1..1" policy="dynamic" bind="setRegistryService"
  * unbind="unsetRegistryService"
  */
-public class WSUserStoreDSComponent {
+public class WSOutboundUserStoreDSComponent {
 
-    private static Log log = LogFactory.getLog(WSUserStoreDSComponent.class);
+    private static Log log = LogFactory.getLog(WSOutboundUserStoreDSComponent.class);
 
     protected void activate(ComponentContext ctxt) {
         try {
 
-            UserStoreManager remoteStoreManager = new WSUserStoreManager();
+            UserStoreManager remoteStoreManager = new WSOutboundUserStoreManager();
             ctxt.getBundleContext().registerService(UserStoreManager.class.getName(),
                     remoteStoreManager, null);
-            scheduleCleanupTask();
 
             if (log.isDebugEnabled()) {
-                log.debug("Carbon Remote User Store activated successfully.");
+                log.debug("Outbound Remote User Store activated successfully.");
             }
 
         } catch (Throwable e) {
-            log.error("Failed to activate Carbon Remote User Store activated successfully ", e);
+            log.error("Failed to activate Outbound Remote User Store activated successfully ", e);
         }
     }
 
     protected void deactivate(ComponentContext ctxt) {
         if (log.isDebugEnabled()) {
-            log.debug("Carbon Carbon Remote User Store is deactivated ");
+            log.debug("Outbound Remote User Store is deactivated ");
         }
     }
 
@@ -89,9 +85,5 @@ public class WSUserStoreDSComponent {
         WSUserStoreComponentHolder.getInstance().setRegistryService(null);
     }
 
-    private void scheduleCleanupTask(){
-        Timer time = new Timer();
-        CleanupSchedulerTask cleanupSchedulerTask = new CleanupSchedulerTask();
-        time.schedule(cleanupSchedulerTask, 0, 5 * 60 * 60 * 1000);
-    }
+
 }
