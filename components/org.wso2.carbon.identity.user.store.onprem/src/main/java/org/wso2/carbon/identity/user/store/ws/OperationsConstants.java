@@ -17,8 +17,13 @@
 */
 package org.wso2.carbon.identity.user.store.ws;
 
-public class QueryConstant {
+public class OperationsConstants {
 
-    public final static String ADD_UM_OPERATIONS = "INSERT INTO UM_OPERATIONS(UM_CORELATION_ID,UM_REQUEST_TYPE,UM_REQUEST_DATA,UM_STATE,UM_TENANT_ID) VALUES(?,?,?,?,?);";
+    public final static String UM_OPERATION_STATUS_NEW = "N";
+    public final static String UM_OPERATION_STATUS_PROCESSING = "P";
+    public final static String UM_OPERATION_STATUS_COMPLETED = "C";
 
+    public final static String UM_OPERATION_TYPE_AUTHENTICATE = "authenticate";
+
+    public final static String UM_OPERATION_AUTHENTICATE_RESULT_SUCCESS = "SUCCESS";
 }
