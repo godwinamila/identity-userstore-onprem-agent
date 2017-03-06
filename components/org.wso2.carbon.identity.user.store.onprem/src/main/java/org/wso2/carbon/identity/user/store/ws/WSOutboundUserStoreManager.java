@@ -71,16 +71,16 @@ public class WSOutboundUserStoreManager extends JDBCUserStoreManager {
         return isAuthenticated;
     }
 
-    private String addNextOperation(String operationType, String requestData) throws UserStoreException{
+    private String addNextOperation(String operationType, String requestData) throws UserStoreException {
         Connection dbConnection = null;
         PreparedStatement prepStmt = null;
-        String corelationId = UUID.randomUUID().toString();
+        String correlationId = UUID.randomUUID().toString();
         try {
             int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
 
             dbConnection = this.getDBConnection();
-            prepStmt = dbConnection.prepareStatement(QueryConstants.ADD_UM_OPERATIONS);
-            prepStmt.setString(1, corelationId);
+            prepStmt = dbConnection.prepareStatement(QueryConstants.UM_OPERATIONS_ADD);
+            prepStmt.setString(1, correlationId);
             prepStmt.setString(2, operationType);
             prepStmt.setString(3, requestData);
             prepStmt.setString(4, OperationsConstants.UM_OPERATION_STATUS_NEW);
@@ -93,11 +93,10 @@ public class WSOutboundUserStoreManager extends JDBCUserStoreManager {
         } finally {
             DatabaseUtil.closeAllConnections(dbConnection, prepStmt);
         }
-        return corelationId;
+        return correlationId;
     }
 
-
-    private boolean getAuthenticationResult(String correlationId) throws UserStoreException{
+    private boolean getAuthenticationResult(String correlationId) throws UserStoreException {
 
         PreparedStatement prepStmt = null;
         Connection dbConnection = null;
@@ -105,7 +104,7 @@ public class WSOutboundUserStoreManager extends JDBCUserStoreManager {
         try {
 
             dbConnection = this.getDBConnection();
-            prepStmt = dbConnection.prepareStatement(QueryConstants.ADD_GET_OPERATION_BY_CORELATION_ID);
+            prepStmt = dbConnection.prepareStatement(QueryConstants.UM_OPERATIONS_GET_BY_CORRELATION_ID);
             prepStmt.setString(1, correlationId);
             while (true) {
                 resultSet = prepStmt.executeQuery();
@@ -123,7 +122,7 @@ public class WSOutboundUserStoreManager extends JDBCUserStoreManager {
                 }
             }
         } catch (SQLException ex) {
-            log.error("Error while adding user authentication request for next operation.", ex);
+            log.error("Error while reading user authentication result for " + correlationId, ex);
             return false;
         } finally {
             DatabaseUtil.closeAllConnections(dbConnection, resultSet, prepStmt);
@@ -137,13 +136,11 @@ public class WSOutboundUserStoreManager extends JDBCUserStoreManager {
     }
 
     public Date getPasswordExpirationTime(String userName) throws UserStoreException {
-        // not supporting this by sample user store manager.
         return null;
     }
 
     public Map<String, String> getUserPropertyValues(String userName, String[] propertyNames,
             String profileName) throws UserStoreException {
-
         return null;
     }
 
