@@ -26,9 +26,9 @@ import org.wso2.carbon.core.AbstractAdmin;
 
 import java.io.IOException;
 
-public class CloudDirectoryAdminService extends AbstractAdmin {
+public class CloudOutboundAgentAdminService extends AbstractAdmin {
 
-    private static Log log = LogFactory.getLog(CloudDirectoryAdminService.class);
+    private static Log log = LogFactory.getLog(CloudOutboundAgentAdminService.class);
 
     public boolean testConnection(String url) {
 

@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.user.store.ws;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.UserStoreException;
@@ -65,10 +66,15 @@ public class WSOutboundUserStoreManager extends JDBCUserStoreManager {
         boolean isAuthenticated = false;
         if (userName != null && credential != null) {
 
-            String correlationId = addNextOperation(OperationsConstants.UM_OPERATION_TYPE_AUTHENTICATE, userName);
+            String correlationId = addNextOperation(OperationsConstants.UM_OPERATION_TYPE_AUTHENTICATE,
+                    getAuthenticationRequest(userName, credential));
             isAuthenticated = getAuthenticationResult(correlationId);
         }
         return isAuthenticated;
+    }
+
+    private String getAuthenticationRequest(String userName, Object credential) {
+        return String.format("{username : '%s', password : '%s'}", userName, credential);
     }
 
     private String addNextOperation(String operationType, String requestData) throws UserStoreException {
@@ -76,7 +82,8 @@ public class WSOutboundUserStoreManager extends JDBCUserStoreManager {
         PreparedStatement prepStmt = null;
         String correlationId = UUID.randomUUID().toString();
         try {
-            int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+            //String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
+            String tenantDomain = IdentityTenantUtil.getTenantDomain(tenantId);
 
             dbConnection = this.getDBConnection();
             prepStmt = dbConnection.prepareStatement(QueryConstants.UM_OPERATIONS_ADD);
@@ -84,9 +91,10 @@ public class WSOutboundUserStoreManager extends JDBCUserStoreManager {
             prepStmt.setString(2, operationType);
             prepStmt.setString(3, requestData);
             prepStmt.setString(4, OperationsConstants.UM_OPERATION_STATUS_NEW);
-            prepStmt.setInt(5, tenantId);
+            prepStmt.setString(5, tenantDomain);
 
             prepStmt.executeUpdate();
+            dbConnection.commit();
         } catch (SQLException ex) {
             log.error("Error while adding user authentication request for next operation.", ex);
             throw new UserStoreException("Authentication Failure");

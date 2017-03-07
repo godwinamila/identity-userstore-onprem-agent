@@ -17,7 +17,7 @@
   -->
 <serviceGroup>
 
-    <service name="CloudDirectoryAdminService" scope="transportsession">
+    <service name="CloudOutboundAgentAdminService" scope="transportsession">
         <transports>
             <transport>https</transport>
         </transports>
@@ -25,7 +25,7 @@
         <description>
             To administer Configuration related functionality.
         </description>
-        <parameter name="ServiceClass">org.wso2.carbon.identity.user.store.ws.CloudDirectoryAdminService</parameter>
+        <parameter name="ServiceClass">org.wso2.carbon.identity.user.store.ws.CloudOutboundAgentAdminService</parameter>
         <parameter name="adminService" locked="true">true</parameter>
         <parameter name="AuthorizationAction" locked="true">/permission/admin/login</parameter>
     </service>
