@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+  Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
   WSO2 Inc. licenses this file to you under the Apache License,
   Version 2.0 (the "License"); you may not use this file except
@@ -89,6 +89,7 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.json.wso2</groupId>
             <artifactId>json</artifactId>
@@ -131,16 +132,33 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            org.wso2.carbon.identity.user.store.ws.internal,
+                            org.wso2.carbon.identity.user.store.outbound.internal,
                         </Private-Package>
                         <Import-Package>
+                            org.osgi.framework; version="${osgi.framework.imp.pkg.version.range}",
+                            org.osgi.service.component; version="${osgi.service.component.imp.pkg.version.range}",
                             org.wso2.carbon.identity.application.common.*;version="${carbon.identity.framework.imp.pkg.version.range}",
+                            org.apache.tomcat.jdbc.pool.*;version="${org.apache.tomcat.jdbc.version.range}",
+                            org.wso2.carbon.utils.*; version="${carbon.kernel.imp.pkg.version.range}",
+                            org.wso2.carbon.core.*;version="${carbon.kernel.imp.pkg.version.range}",
+                            org.wso2.carbon.user.core.*;version="${carbon.kernel.imp.pkg.version.range}",
+                            org.wso2.carbon.user.api; version="${carbon.user.api.imp.pkg.version.range}",
+                            org.wso2.carbon.registry.core.*;version="${carbon.kernel.registry.imp.pkg.version.range}",
+                            org.wso2.carbon.context.*;version="${carbon.kernel.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.user.store.common.messaging.*;version="${user.store.common.version.range}",
+                            org.wso2.carbon.identity.user.store.common.model.*;version="${user.store.common.version.range}",
+                            org.wso2.carbon.identity.user.store.common.*;version="${user.store.common.version.range}",
                             org.wso2.carbon.identity.core.*;version="${carbon.identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.*;version="${carbon.identity.framework.imp.pkg.version.range}",
+                            org.apache.commons.logging.*; version="${commons-logging.osgi.version.range}",
+                            org.json.*; version="${json.wso2.version.range}",
+                            javax.sql.*,
+                            javax.jms.*,
+                            javax.naming.*,
                         </Import-Package>
 
-
                         <Export-Package>
-                            !org.wso2.carbon.identity.user.store.ws.internal,
+                            !org.wso2.carbon.identity.user.store.outbound.internal,
                             org.wso2.carbon.identity.user.store.outbound.*;
                             version="${project.version}",
                         </Export-Package>

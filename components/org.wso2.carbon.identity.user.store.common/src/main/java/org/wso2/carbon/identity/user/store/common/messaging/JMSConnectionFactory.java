@@ -35,6 +35,14 @@ public class JMSConnectionFactory {
     private ActiveMQConnectionFactory connectionFactory;
     private boolean transactedSession = false;
 
+    static {
+        try {
+            LOGGER.info("Initialuzing JMSConnectionFactory");
+        } catch (Throwable t) {
+            LOGGER.error("Failure during static initialization", t);
+        }
+    }
+
     /**
      * Create connection factory
      * @param messageBrokerURL message broker URL
